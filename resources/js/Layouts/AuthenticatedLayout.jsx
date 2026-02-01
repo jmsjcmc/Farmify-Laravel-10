@@ -3,10 +3,11 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const { auth } = usePage().props;
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -24,6 +25,10 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
+                                {auth?.permissions?.includes('access_admin_dashboard') && (
+                                    <NavLink href={route('admin.dashboard')}
+                                    active={route().current('admin.dashboard')}>Admin</NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -95,6 +100,12 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
+                        {auth?.permissions?.includes('access_admin_dashboard') && (
+                            <ResponsiveNavLink href={route('admin.dashboard')}
+                            active={route().current('admin.dashboard')}>
+                                Admin
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
