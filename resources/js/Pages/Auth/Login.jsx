@@ -77,24 +77,27 @@ export default function Login({ status, canResetPassword, canRegister }) {
                     </label>
                 </div>
 
-                <div className="flex items-center justify-end mt-4 space-x-4">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
-
-                    {canRegister && (
-                        <Link href={route('register')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Register</Link>
-                    )}
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+               {canResetPassword && (
+                <div className='mt-4 text-right'>
+                    <Link
+                    href={route('password.request')}
+                     className="text-sm text-gray-600 hover:text-gray-900 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Forgot your password?</Link>
                 </div>
+               )}
+
+               <div className='mt-6 flex justify-end space-x-3'>
+                {canRegister && (
+                    <PrimaryButton
+                    as='link'
+                    href={route('register')}
+                    className='bg-gray-600 hover:bg-gray-500'>Register</PrimaryButton>
+                )}
+
+                <PrimaryButton disabled={processing}>
+                    Log in
+                </PrimaryButton>
+               </div>
             </form>
         </GuestLayout>
     );
