@@ -19,6 +19,15 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/dashboard';
 
+    public static function redirectTo(Request $request): string
+    {
+        $user = $request->user();
+        if ($user?->can('access_admin_dashboard')) {
+            return route('admin.dashboard');
+        }
+
+        return route('dashboard');
+    }
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
