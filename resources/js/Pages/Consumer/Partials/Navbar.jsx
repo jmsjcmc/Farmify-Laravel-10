@@ -2,8 +2,10 @@ import { Menu } from '@headlessui/react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Link } from '@inertiajs/react';
+import { LogIn, LogOut, Settings, User, UserPlus } from 'lucide-react';
 
 export default function Navbar({ user }) {
+    const isAuth = Boolean(user?.id)
     return (
         <nav className="w-full bg-white shadow-md py-4 px-6 flex justify-between items-center">
             {/* Logo / Brand */}
@@ -35,23 +37,55 @@ export default function Navbar({ user }) {
 
             {/* User Dropdown */}
             <div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="capitalize">
-                            {user.name}
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                            <Link href="/profile">Settings</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Link href="/logout" method="post" as="button">
-                                Log out
-                            </Link>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                  <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        {isAuth ? user.name : 'Account'}
+                    </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="w-48">
+                    {isAuth ? (
+                        <>
+                            <DropdownMenuItem asChild>
+                                <Link href="/profile" className="flex items-center gap-2">
+                                    <Settings className="h-4 w-4" />
+                                    Settings
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    href="/logout"
+                                    method="post"
+                                    as="button"
+                                    className="flex w-full items-center gap-2 text-red-600"
+                                >
+                                    <LogOut className="h-4 w-4" />
+                                    Log out
+                                </Link>
+                            </DropdownMenuItem>
+                        </>
+                    ) : (
+                        <>
+                            <DropdownMenuItem asChild>
+                                <Link href="/login" className="flex items-center gap-2">
+                                    <LogIn className="h-4 w-4" />
+                                    Login
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link href="/register" className="flex items-center gap-2">
+                                    <UserPlus className="h-4 w-4" />
+                                    Register
+                                </Link>
+                            </DropdownMenuItem>
+                        </>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
             </div>
         </nav>
     );

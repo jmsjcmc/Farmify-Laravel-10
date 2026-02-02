@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +28,15 @@ use Inertia\Inertia;
 //     ]);
 // });
 
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
+    });
 
 Route::get('/', function () {
     if (Auth::check()) {
