@@ -21,7 +21,6 @@ import PaginationLinks from '@/Components/Pagination'
 export default function Users({ users, filters }) {
   const [search, setSearch] = useState(filters.search || '')
 
-  // Add User Dialog
   const [addOpen, setAddOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
