@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,7 +25,38 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
-Route::get('/', [Controller::class, 'redirectToLogin']);
+
+
+Route::get('/', function () {
+    if (Auth::check()) {
+        // Redirect based on role
+        $user = Auth::user();
+        if ($user->hasRole('consumer')) {
+            return redirect()->route('consumer.ecommerce');
+        }
+
+        // fallback for other roles
+        return redirect()->route('dashboard');
+    }
+
+    return Inertia::render('LandingPage');
+})->name('landing');
+
+// Consumer Ecommerce Home
+// Route::get('/consumer', function () {
+//     return Inertia::render('Consumer/EcommerceHome');
+// })->middleware(['auth', 'verified'])->name('consumer.ecommerce');
+// Authenticated Ecommerce
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/consumer/ecommerce', fn() => Inertia::render('Consumer/EcommerceHome'))
+        ->name('consumer.ecommerce');
+});
+
+// Guest Ecommerce (no auth required)
+Route::get('/guest/ecommerce', fn() => Inertia::render('Consumer/EcommerceHomeGuest'))
+    ->name('guest.ecommerce');
+
+// Other routes (admin, manager) can still use /dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -36,13 +66,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-Route::middleware(['auth', 'permission:access_admin_dashboard'])
-->prefix('admin')
-->name('admin.')
-->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])
-    ->name('dashboard');
-});
-
 require __DIR__.'/auth.php';

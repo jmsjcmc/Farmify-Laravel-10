@@ -21,7 +21,6 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'canRegister' => Route::has('register'),
             'status' => session('status'),
         ]);
     }
@@ -29,18 +28,20 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
         $user = $request->user();
-        if ($user->can('access_admin_dashboard')) {
-            return redirect()->route('admin.dashboard');
+
+        // Role-based redirect
+        if ($user->hasRole('consumer')) {
+            return redirect()->route('consumer.ecommerce');
         }
 
-        return redirect()->route('dashboard');
+        // fallback
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
