@@ -79,7 +79,7 @@ export default function Navbar({ user }) {
               {isAuth ? (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center gap-2">
+                    <Link href={route('profile.settings')} className="flex items-center gap-2">
                       <Settings className="w-4 h-4" />
                       Settings
                     </Link>
