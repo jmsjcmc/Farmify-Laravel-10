@@ -63,11 +63,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('consumer.ecommerce');
 });
 
-// Guest Ecommerce (no auth required)
+
 Route::get('/guest/ecommerce', fn() => Inertia::render('Consumer/EcommerceHomeGuest'))
     ->name('guest.ecommerce');
 
-// Other routes (admin, manager) can still use /dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -79,6 +78,9 @@ Route::get('/profile/settings', fn () =>
 Route::get('/farm-owner/apply', fn() =>
     Inertia::render('Consumer/FarmOwner/Apply')
 )->middleware('auth')->name('farm-owner.apply');
+
+Route::get('/jobs', fn() =>
+Inertia::render('Consumer/JobFinder'))->middleware('auth')->name('job-find');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

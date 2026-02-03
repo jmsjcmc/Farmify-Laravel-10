@@ -49,7 +49,7 @@ export default function Navbar({ user }) {
                     >
                         Marketplace
                     </Link>
-                    <Link href="/jobs" className={navLink("/jobs")}>
+                    <Link href={route('job-find')} className={navLink("/jobs")}>
                         Jobs
                     </Link>
                     <Link href="/about" className={navLink("/about")}>
