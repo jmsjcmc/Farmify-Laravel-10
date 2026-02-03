@@ -43,6 +43,9 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('consumer.ecommerce');
         }
 
+        if ($user->hasRole('farm_owner')) {
+            return redirect()->route('farm-owner.dashboard');
+        }
         // fallback
         return redirect()->intended(RouteServiceProvider::HOME);
     }
