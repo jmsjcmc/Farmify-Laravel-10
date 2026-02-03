@@ -76,6 +76,9 @@ Route::get('/profile/settings', fn () =>
   Inertia::render('Profile/Setting')
 )->middleware('auth')->name('profile.settings');
 
+Route::get('/farm-owner/apply', fn() =>
+    Inertia::render('Consumer/FarmOwner/Apply')
+)->middleware('auth')->name('farm-owner.apply');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
