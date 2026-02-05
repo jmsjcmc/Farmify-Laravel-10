@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/Components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/Components/ui/sheet"
+import { Sheet, SheetTrigger, SheetContent } from "@/Components/ui/sheet"
 import { Separator } from "@/Components/ui/separator"
 
 const navItems = [
@@ -25,37 +25,61 @@ const navItems = [
   { label: "Reports", href: "/farm-owner/reports", icon: BarChart3 },
 ]
 
-function Sidebar({ url }) {
-  return (
-    <nav className="px-4 space-y-1">
-      {navItems.map(({ label, href, icon: Icon }) => {
-        const active = url.startsWith(href)
+function isActiveRoute(currentUrl, href) {
+  return currentUrl === href || currentUrl.startsWith(`${href}/`)
+}
 
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition
-              ${
-                active
-                  ? "bg-[#1B4332]/10 text-[#1B4332]"
-                  : "text-muted-foreground hover:bg-muted"
-              }
-            `}
-          >
-            <Icon className="w-4 h-4 shrink-0" />
-            {label}
-          </Link>
-        )
-      })}
-    </nav>
+function Sidebar({ url, user }) {
+  return (
+    <div className="flex flex-col h-full">
+      {/* Navigation */}
+      <nav className="flex-1 px-4 py-4 space-y-1">
+        {navItems.map(({ label, href, icon: Icon }) => {
+          const active = isActiveRoute(url, href)
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition
+                ${
+                  active
+                    ? "bg-[#1B4332]/10 text-[#1B4332]"
+                    : "text-muted-foreground hover:bg-muted"
+                }
+              `}
+            >
+              <Icon className="w-4 h-4 shrink-0" />
+              {label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* User / Logout */}
+      <div className="px-4 py-4 border-t">
+        <div className="mb-3">
+          <p className="text-sm font-medium">{user?.name}</p>
+          <p className="text-xs text-muted-foreground">Farm Owner</p>
+        </div>
+
+        <Link
+          href="/logout"
+          method="post"
+          as="button"
+          className="flex items-center w-full gap-2 px-3 py-2 text-sm text-red-600 transition rounded-lg hover:bg-red-50"
+        >
+          <LogOut className="w-4 h-4" />
+          Log out
+        </Link>
+      </div>
+    </div>
   )
 }
 
 export default function FarmOwnerLayout({ children }) {
-  const page = usePage()
-  const url = page.url || ""
-  const { auth } = page.props
+  const { url, props } = usePage()
+  const user = props.auth?.user
 
   return (
     <div className="flex min-h-screen bg-muted/40">
@@ -65,16 +89,7 @@ export default function FarmOwnerLayout({ children }) {
           🌾 Farm Owner
         </div>
 
-        <Sidebar url={url} />
-
-        <div className="p-4 mt-auto border-t">
-          <Link href="/logout" method="post" as="button">
-            <Button variant="outline" className="w-full gap-2">
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
-          </Link>
-        </div>
+        <Sidebar url={url} user={user} />
       </aside>
 
       {/* Main Area */}
@@ -85,7 +100,11 @@ export default function FarmOwnerLayout({ children }) {
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                >
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
@@ -95,16 +114,16 @@ export default function FarmOwnerLayout({ children }) {
                   🌾 Farm Owner
                 </div>
                 <Separator />
-                <Sidebar url={url} />
+                <Sidebar url={url} user={user} />
               </SheetContent>
             </Sheet>
 
-            <h1 className="text-sm font-semibold sm:text-base">
-              Welcome, {auth?.user?.name}
-            </h1>
+            <span className="text-sm text-muted-foreground">
+              Owner Dashboard
+            </span>
           </div>
 
-          {/* Future header actions (notifications, quick actions, etc.) */}
+          {/* Future actions: notifications, quick add */}
           <div className="flex items-center gap-2" />
         </header>
 
