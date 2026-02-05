@@ -3,91 +3,120 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Public / Landing
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
+Route::get('/', function () {
+    if (! Auth::check()) {
+        return Inertia::render('LandingPage');
+    }
 
-Route::middleware(['auth', 'role:admin'])
+    return match (true) {
+        Auth::user()->hasRole('consumer') => redirect()->route('consumer.ecommerce'),
+        Auth::user()->hasRole('admin') => redirect()->route('admin.dashboard'),
+        Auth::user()->hasRole('farm_owner') => redirect()->route('farm-owner.dashboard'),
+        default => redirect()->route('dashboard'),
+    };
+})->name('landing');
+
+/*
+|--------------------------------------------------------------------------
+| Guest Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/guest/ecommerce', fn () =>
+    Inertia::render('Consumer/EcommerceHomeGuest')
+)->name('guest.ecommerce');
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes (All Users)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn () =>
+        Inertia::render('Dashboard')
+    )->name('dashboard');
+
+    Route::get('/profile/settings', fn () =>
+        Inertia::render('Profile/Setting')
+    )->name('profile.settings');
+
+    Route::get('/jobs', fn () =>
+        Inertia::render('Consumer/JobFinder')
+    )->name('job-find');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Consumer Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'verified', 'role:consumer'])
+    ->prefix('consumer')
+    ->name('consumer.')
+    ->group(function () {
+        Route::get('/ecommerce', fn () =>
+            Inertia::render('Consumer/EcommerceHome')
+        )->name('ecommerce');
+
+        Route::get('/farm-owner/apply', fn () =>
+            Inertia::render('Consumer/FarmOwner/Apply')
+        )->name('farm-owner.apply');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Farm Owner Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'verified', 'role:farm_owner'])
+    ->prefix('farm-owner')
+    ->name('farm-owner.')
+    ->group(function () {
+        Route::get('/dashboard', fn () =>
+            Inertia::render('FarmOwner/Dashboard')
+        )->name('dashboard');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'verified', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+            ->name('dashboard');
+
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
     });
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        // Redirect based on role
-        $user = Auth::user();
-        if ($user->hasRole('consumer')) {
-            return redirect()->route('consumer.ecommerce');
-        }
-
-        // fallback for other roles
-        return redirect()->route('dashboard');
-    }
-
-    return Inertia::render('LandingPage');
-})->name('landing');
-
-// Consumer Ecommerce Home
-// Route::get('/consumer', function () {
-//     return Inertia::render('Consumer/EcommerceHome');
-// })->middleware(['auth', 'verified'])->name('consumer.ecommerce');
-// Authenticated Ecommerce
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/consumer/ecommerce', fn() => Inertia::render('Consumer/EcommerceHome'))
-        ->name('consumer.ecommerce');
-});
-
-
-Route::get('/guest/ecommerce', fn() => Inertia::render('Consumer/EcommerceHomeGuest'))
-    ->name('guest.ecommerce');
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/profile/settings', fn () =>
-  Inertia::render('Profile/Setting')
-)->middleware('auth')->name('profile.settings');
-
-Route::get('/farm-owner/apply', fn() =>
-    Inertia::render('Consumer/FarmOwner/Apply')
-)->middleware('auth')->name('farm-owner.apply');
-
-Route::get('/jobs', fn() =>
-Inertia::render('Consumer/JobFinder'))->middleware('auth')->name('job-find');
-
-Route::get('/owner-dashboard', fn() =>
-Inertia::render('FarmOwner/Dashboard'))->middleware('auth')->name('farm-owner.dashboard');
+/*
+|--------------------------------------------------------------------------
+| Profile (Controller-based)
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-require __DIR__.'/auth.php';
+
+require __DIR__ . '/auth.php';
