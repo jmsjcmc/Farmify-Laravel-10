@@ -17,6 +17,7 @@ import { Plus } from 'lucide-react'
 import { Search } from 'lucide-react'
 import UserActions from './Partials/UserAction'
 import PaginationLinks from '@/Components/Pagination'
+import { ROLE_CONFIG } from '@/config/roles'
 
 export default function Users({ users, filters }) {
   const [search, setSearch] = useState(filters.search || '')
@@ -64,7 +65,7 @@ export default function Users({ users, filters }) {
           </p>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           {/* Search */}
           <form onSubmit={handleSearch} className="relative w-full sm:w-72">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -79,7 +80,7 @@ export default function Users({ users, filters }) {
           {/* Add User Button */}
           <Dialog open={addOpen} onOpenChange={setAddOpen}>
             <Button onClick={() => setAddOpen(true)} className="flex items-center gap-2">
-              <Plus className="h-4 w-4" /> Add User
+              <Plus className="w-4 h-4" /> Add User
             </Button>
 
             <DialogContent className="sm:max-w-md">
@@ -89,7 +90,7 @@ export default function Users({ users, filters }) {
 
               <form onSubmit={handleAddUser} className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Name</label>
+                  <label className="block mb-1 text-sm font-medium">Name</label>
                   <Input
                     type="text"
                     name="name"
@@ -100,7 +101,7 @@ export default function Users({ users, filters }) {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Email</label>
+                  <label className="block mb-1 text-sm font-medium">Email</label>
                   <Input
                     type="email"
                     name="email"
@@ -111,7 +112,7 @@ export default function Users({ users, filters }) {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Password</label>
+                  <label className="block mb-1 text-sm font-medium">Password</label>
                   <Input
                     type="password"
                     name="password"
@@ -138,9 +139,9 @@ export default function Users({ users, filters }) {
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border bg-white shadow-sm overflow-hidden">
+      <div className="overflow-hidden bg-white border rounded-lg shadow-sm">
         <Table>
-          <TableHeader className="bg-muted/40 sticky top-0 z-10">
+          <TableHeader className="sticky top-0 z-10 bg-muted/40">
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
@@ -159,14 +160,18 @@ export default function Users({ users, filters }) {
                   <TableCell>
                     <div className="flex flex-wrap gap-2">
                       {user.roles.length ? (
-                        user.roles.map((role) => (
-                          <Badge
-                            key={role.id}
-                            variant={role.name === 'admin' ? 'destructive' : 'secondary'}
-                          >
-                            {role.name}
-                          </Badge>
-                        ))
+                        user.roles.map((role) => {
+                            const config = ROLE_CONFIG[role.name] ?? {
+                                label: role.name,
+                                variant: 'outline'
+                            }
+
+                            return (
+                                <Badge key={role.id} variant={config.variant}>
+                                    {config.label}
+                                </Badge>
+                            )
+                        })
                       ) : (
                         <Badge variant="outline">No role</Badge>
                       )}
@@ -180,7 +185,7 @@ export default function Users({ users, filters }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
                   No users found.
                 </TableCell>
               </TableRow>
@@ -190,7 +195,7 @@ export default function Users({ users, filters }) {
       </div>
 
       {/* Pagination */}
-      <div className="mt-6 flex justify-end">
+      <div className="flex justify-end mt-6">
         <PaginationLinks links={users.links} />
       </div>
     </AdminLayout>
