@@ -35,7 +35,8 @@ Route::get('/', function () {
 Route::get('/guest/ecommerce', fn () =>
     Inertia::render('Consumer/EcommerceHomeGuest')
 )->name('guest.ecommerce');
-
+Route::get('/guest/jobs', fn() =>
+    Inertia::render('Consumer/JobFinderGuest'))->name('guest.jobs');
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes (All Users)

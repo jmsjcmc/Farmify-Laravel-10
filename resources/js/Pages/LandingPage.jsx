@@ -18,7 +18,7 @@ export default function LandingPage() {
           >
             Marketplace
           </Link>
-          <a href="#jobs" className="hover:text-[#2D5A27]">
+          <a href={isAuth ? route("job-find") : route("guest.jobs")} className="hover:text-[#2D5A27]">
             Jobs
           </a>
           <a href="#about" className="hover:text-[#2D5A27]">
@@ -41,12 +41,12 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="grid md:grid-cols-2 gap-12 px-8 py-24 items-center">
+      <section className="grid items-center gap-12 px-8 py-24 md:grid-cols-2">
         <div>
           <h1 className="text-4xl md:text-5xl font-bold text-[#2D5A27] mb-6">
             The Pulse of the Modern Farm.
           </h1>
-          <p className="text-lg mb-8">
+          <p className="mb-8 text-lg">
             From seed to sale, Farmify connects owners, managers, and laborers
             in one powerful ecosystem. Grow your farm, find your team, and
             reach your market—all in one place.
@@ -61,17 +61,17 @@ export default function LandingPage() {
             </Link>
           </Button>
         </div>
-        <div className="rounded-2xl overflow-hidden shadow-lg">
+        <div className="overflow-hidden shadow-lg rounded-2xl">
           <img
             src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6"
             alt="Farm"
-            className="w-full h-full object-cover"
+            className="object-cover w-full h-full"
           />
         </div>
       </section>
 
       {/* Problem / Solution */}
-      <section className="px-8 py-20 bg-white text-center">
+      <section className="px-8 py-20 text-center bg-white">
         <h2 className="text-3xl font-bold text-[#2D5A27] mb-4">
           Agriculture is complex. Managing it shouldn't be.
         </h2>
@@ -83,7 +83,7 @@ export default function LandingPage() {
       </section>
 
       {/* Role-Based Grid */}
-      <section className="px-8 py-20 grid md:grid-cols-4 gap-6">
+      <section className="grid gap-6 px-8 py-20 md:grid-cols-4">
         {[
           {
             title: "Owners",
@@ -109,7 +109,7 @@ export default function LandingPage() {
           <Card key={item.title} className="shadow-md">
             <CardContent className="p-6">
               <div className="text-[#2D5A27] mb-4">{item.icon}</div>
-              <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+              <h3 className="mb-2 text-lg font-semibold">{item.title}</h3>
               <p className="text-sm">{item.text}</p>
             </CardContent>
           </Card>
@@ -118,14 +118,14 @@ export default function LandingPage() {
 
       {/* Quote */}
       <section className="px-8 py-24 text-center bg-[#2D5A27] text-white">
-        <blockquote className="text-3xl font-semibold max-w-4xl mx-auto">
+        <blockquote className="max-w-4xl mx-auto text-3xl font-semibold">
           “We aren't just building a marketplace; we're building the
           infrastructure for the next generation of farmers.”
         </blockquote>
       </section>
 
       {/* Small Business Reassurance */}
-      <section className="px-8 py-20 bg-white text-center">
+      <section className="px-8 py-20 text-center bg-white">
         <h2 className="text-2xl font-bold text-[#2D5A27] mb-4">
           Scaling with you.
         </h2>

@@ -50,7 +50,6 @@ export default function JobFinder() {
   });
 
   return (
-    <ConsumerLayout>
       <div className="min-h-screen bg-[#F8F9FA] px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <header className="flex flex-col gap-4 mb-8 sm:flex-row sm:justify-between sm:items-center">
@@ -147,6 +146,5 @@ export default function JobFinder() {
           <Button variant="outline">Load More</Button>
         </div>
       </div>
-    </ConsumerLayout>
   );
 }
