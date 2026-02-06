@@ -40,11 +40,11 @@ export default function Navbar({ user, isGuest }) {
 
         {/* Main Nav */}
         <div className="items-center hidden gap-6 md:flex">
-          <Link href="/consumer/ecommerce" className={navLink("/consumer/ecommerce")}>
+          <Link href={isGuest ? route("guest.ecommerce") : route("ecommerce")} className={navLink("/consumer/ecommerce")}>
             Marketplace
           </Link>
 
-          <Link href={route("job-find")} className={navLink("/jobs")}>
+          <Link href={isGuest ? route("guest.jobs") : route("job-find")} className={navLink("/jobs")}>
             Jobs
           </Link>
 
