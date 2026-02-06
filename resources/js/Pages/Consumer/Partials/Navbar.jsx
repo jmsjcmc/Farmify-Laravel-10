@@ -40,7 +40,7 @@ export default function Navbar({ user, isGuest }) {
 
         {/* Main Nav */}
         <div className="items-center hidden gap-6 md:flex">
-          <Link href={isGuest ? route("guest.ecommerce") : route("ecommerce")} className={navLink("/consumer/ecommerce")}>
+          <Link href={isGuest ? route("guest.ecommerce") : route("consumer.ecommerce")} className={navLink("/consumer/ecommerce")}>
             Marketplace
           </Link>
 
@@ -54,7 +54,7 @@ export default function Navbar({ user, isGuest }) {
 
           {!isGuest && (
             <Link
-              href={route("farm-owner.apply")}
+              href={route("consumer.farm-owner.apply")}
               className="font-medium text-[#1B4332]"
             >
               Start Selling
