@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('user_farms', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('user_id')
+            ->constrained()
+            ->cascadeOnDelete();
+
+            $table->foreignId('farm_id')
+            ->constrained()
+            ->cascadeOnDelete();
+
+            $table->timestamp('created_at');
         });
     }
 
