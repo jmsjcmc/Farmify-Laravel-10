@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class UserFarm extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        ''
-    ]
+        'user_id',
+        'farm_id'
+    ];
 }
